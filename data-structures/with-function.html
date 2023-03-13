@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chart.js, the Missing Manual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        .chartMenu {
+            width: 100vw;
+            height: 40px;
+            background: #1A1A1A;
+            color: rgba(75, 192, 192, 1);
+        }
+
+        .chartMenu p {
+            padding: 10px;
+            font-size: 20px;
+        }
+
+        .chartCard {
+            width: 100vw;
+            height: calc(100vh - 40px);
+            background: rgba(75, 192, 192, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chartBox {
+            width: 700px;
+            padding: 20px;
+            border-radius: 20px;
+            border: solid 3px rgba(75, 192, 192, 1);
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chartMenu">
+        <p>Chart JS 3.7.0</p>
+    </div>
+    <div class="chartCard">
+        <div class="chartBox">
+            <canvas id="myChart"></canvas>
+            <button onclick="changeFinancials('cost')">Cost</button>
+            <button onclick="changeFinancials('budget')">Budget</button>
+            <button onclick="changeFinancials('tax')">Tax</button>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const departmentDatasets = [
+            'Sales Department',
+            'Marketing Department',
+            'HR Department',
+            'IT Department'
+        ]
+
+        const cost = [2000, 3000, 4000, 5000]
+        const budget = [3000, 4000, 5000, 10000]
+        const tax = [1000, 2000, 3000, 3500]
+
+        const departmentInfo = departmentDatasets.map((dept, index) => {
+            let departmentDataset = {
+                department: dept,
+                financials: {
+                    cost: cost[index],
+                    budget: budget[index],
+                    tax: tax[index]
+                },
+            }
+
+            return departmentDataset
+        })
+
+        console.log('departmentInfo :>> ', departmentInfo);
+        // data block
+        const data = {
+            //   labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: 'Cost',
+                data: departmentInfo,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+            }]
+        };
+
+        // config block
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                parsing: {
+                    yAxisKey: 'department',
+                    xAxisKey: 'financials.cost'
+                },
+                borderWidth: 1,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+        // init render block
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+
+        function changeFinancials(financials){
+            myChart.config.options.parsing.xAxisKey = `financials.${financials}`
+            myChart.config.data.datasets[0].label = financials[0].toUpperCase() + financials.substring(1)
+            myChart.update()
+        }
+    </script>
+
+
+</body>
+
+</html>
